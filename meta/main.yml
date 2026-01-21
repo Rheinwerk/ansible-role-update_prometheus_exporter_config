@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Rheinwerk
+  description: Configure Prometheus exporters via systemd drop-ins
+  license: MIT
+  min_ansible_version: "2.12"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+    - name: Ubuntu
+      versions:
+        - jammy
+
+dependencies: []

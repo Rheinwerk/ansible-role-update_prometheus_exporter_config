@@ -1,0 +1,24 @@
+---
+# List of exporters to configure
+# Each exporter:
+#   name: (required) service name (e.g., systemd_exporter)
+#   listen_address: (optional) default: 127.0.0.1
+#   listen_port: (required) listen port
+#   extra_args: (optional) list of additional arguments
+#   env_vars: (optional) dict of environment variables
+#   binary_dir: (optional) path to binary, omit for default location
+#
+# Example:
+# _prometheus_exporter_configs:
+#   - name: systemd_exporter
+#     listen_port: "9558"
+#     extra_args:
+#       - "--systemd.collector.unit-include=ssh\\.service"
+#   - name: mysqld_exporter
+#     listen_port: "9104"
+#     env_vars:
+#       MYSQLD_EXPORTER_PASSWORD: "{{ password_var }}"
+#     extra_args:
+#       - "--mysqld.username=monitoring"
+
+_prometheus_exporter_configs: []

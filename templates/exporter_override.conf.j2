@@ -1,0 +1,13 @@
+{{ ansible_managed | comment }}
+
+[Service]
+{% for env_name, env_value in (_exporter.env_vars | default({})).items() %}
+Environment="{{ env_name }}={{ env_value }}"
+{% endfor %}
+ExecStart=
+ExecStart={{ (_exporter.binary_dir | default('') ~ '/') if _exporter.binary_dir | default('') else '' }}{{ _exporter.name }} \
+    --web.listen-address={{ _exporter.listen_address | default('127.0.0.1') }}:{{ _exporter.listen_port }} \
+{% for arg in _exporter.extra_args | default([]) %}
+    {{ arg }}{% if not loop.last %} \{% endif %}
+
+{% endfor %}
