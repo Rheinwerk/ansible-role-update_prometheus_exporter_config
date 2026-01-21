@@ -1,0 +1,7 @@
+---
+- name: Configure exporters
+  ansible.builtin.include_tasks: configure_exporter.yml
+  loop: "{{ _prometheus_exporter_configs }}"
+  loop_control:
+    loop_var: _exporter
+    label: "{{ _exporter.name }}"

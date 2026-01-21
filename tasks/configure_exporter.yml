@@ -1,0 +1,22 @@
+---
+- name: "{{ _exporter.name }} | Create systemd drop-in directory"
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ _exporter.name }}.service.d"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: "{{ _exporter.name }} | Configure exporter via systemd drop-in"
+  ansible.builtin.template:
+    src: exporter_override.conf.j2
+    dest: "/etc/systemd/system/{{ _exporter.name }}.service.d/override.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  register: _exporter_dropin
+
+- name: "{{ _exporter.name }} | Reload systemd"
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: _exporter_dropin.changed
