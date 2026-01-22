@@ -26,7 +26,9 @@ Each item supports the following properties:
 | `listen_port` | yes | - | Port the exporter listens on |
 | `listen_address` | no | `127.0.0.1` | Address the exporter binds to |
 | `extra_args` | no | `[]` | List of additional command-line arguments |
+| `env_vars` | no | `{}` | Dict of environment variables |
 | `binary_dir` | no | - | Path to the binary directory (omit for default location) |
+| `config_content` | no | - | Content for `/etc/<name>/config.yml` config file |
 
 ## Example Playbook
 
@@ -50,15 +52,27 @@ Each item supports the following properties:
             binary_dir: /opt/custom/bin
             extra_args:
               - "--log.level=debug"
+
+          - name: process-exporter
+            listen_port: "9256"
+            extra_args:
+              - "--config.path=/etc/process-exporter/config.yml"
+            config_content: |
+              process_names:
+                - name: "{{.Comm}}"
+                  comm:
+                    - nginx
+                    - postgres
 ```
 
 ## How It Works
 
 For each configured exporter, the role:
 
-1. Creates a systemd drop-in directory at `/etc/systemd/system/<name>.service.d/`
-2. Deploys an `override.conf` that redefines the `ExecStart` directive
-3. Reloads systemd if the configuration changed
+1. If `config_content` is defined, creates `/etc/<name>/config.yml` with the specified content
+2. Creates a systemd drop-in directory at `/etc/systemd/system/<name>.service.d/`
+3. Deploys an `override.conf` that redefines the `ExecStart` directive
+4. Reloads systemd if the configuration changed
 
 ## License
 

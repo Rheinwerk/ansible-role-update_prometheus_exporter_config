@@ -7,6 +7,7 @@
 #   extra_args: (optional) list of additional arguments
 #   env_vars: (optional) dict of environment variables
 #   binary_dir: (optional) path to binary, omit for default location
+#   config_content: (optional) content for /etc/<name>/config.yml
 #
 # Example:
 # _prometheus_exporter_configs:
@@ -20,5 +21,14 @@
 #       MYSQLD_EXPORTER_PASSWORD: "{{ password_var }}"
 #     extra_args:
 #       - "--mysqld.username=monitoring"
+#   - name: process-exporter
+#     listen_port: "9256"
+#     extra_args:
+#       - "--config.path=/etc/process-exporter/config.yml"
+#     config_content: |
+#       process_names:
+#         - name: "{{.Comm}}"
+#           comm:
+#             - nginx
 
 _prometheus_exporter_configs: []
