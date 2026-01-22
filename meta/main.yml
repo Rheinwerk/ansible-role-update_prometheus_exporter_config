@@ -2,7 +2,8 @@
 galaxy_info:
   author: Rheinwerk
   description: Configure Prometheus exporters via systemd drop-ins
-  license: MIT
+  company: Rheinwerk
+  license: license (GPLv3)
   min_ansible_version: "2.12"
   platforms:
     - name: Debian
@@ -11,5 +12,6 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - jammy
-
+  galaxy_tags:
+    - prometheus
 dependencies: []
