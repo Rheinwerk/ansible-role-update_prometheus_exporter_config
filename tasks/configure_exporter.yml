@@ -1,4 +1,21 @@
 ---
+- name: "{{ _exporter.name }} | Check if base service file exists"
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/{{ _exporter.name }}.service"
+  register: _exporter_service_file
+
+- name: "{{ _exporter.name }} | Copy base service file from binary_name variant"
+  ansible.builtin.copy:
+    src: "/etc/systemd/system/{{ _exporter.binary_name }}.service"
+    dest: "/etc/systemd/system/{{ _exporter.name }}.service"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - not _exporter_service_file.stat.exists
+    - _exporter.binary_name is defined
+
 - name: "{{ _exporter.name }} | Create systemd drop-in directory"
   ansible.builtin.file:
     path: "/etc/systemd/system/{{ _exporter.name }}.service.d"
