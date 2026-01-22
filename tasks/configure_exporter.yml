@@ -33,7 +33,7 @@
     mode: "0644"
   register: _exporter_dropin
 
-- name: "{{ _exporter.name }} | Reload systemd"
+- name: "{{ _exporter.name }} | Reload systemd" # noqa no-handler
   ansible.builtin.systemd:
     daemon_reload: true
   when: _exporter_dropin.changed
