@@ -6,7 +6,9 @@ Environment="{{ env_name }}={{ env_value }}"
 {% endfor %}
 ExecStart=
 ExecStart={{ (_exporter.binary_dir | default('') ~ '/') if _exporter.binary_dir | default('') else '' }}{{ _exporter.binary_name | default(_exporter.name) }} \
+{% if _exporter.listen_port | default('') %}
     --web.listen-address={{ _exporter.listen_address | default('127.0.0.1') }}:{{ _exporter.listen_port }} \
+{% endif %}
 {% for arg in _exporter.extra_args | default([]) %}
     {{ arg }}{% if not loop.last %} \{% endif %}
 

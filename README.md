@@ -23,8 +23,8 @@ Each item supports the following properties:
 | Property | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `name` | yes | - | Service name (e.g., `systemd_exporter`) |
-| `listen_port` | yes | - | Port the exporter listens on |
-| `listen_address` | no | `127.0.0.1` | Address the exporter binds to |
+| `listen_port` | no | - | Port the exporter listens on. If set, `--web.listen-address` is added automatically. Omit for exporters that don't support this flag. |
+| `listen_address` | no | `127.0.0.1` | Address the exporter binds to (only used with `listen_port`) |
 | `extra_args` | no | `[]` | List of additional command-line arguments |
 | `env_vars` | no | `{}` | Dict of environment variables |
 | `binary_dir` | no | - | Path to the binary directory (omit for default location) |
@@ -63,6 +63,12 @@ Each item supports the following properties:
                   comm:
                     - nginx
                     - postgres
+
+          # No listen_port — openvpn_exporter does not support --web.listen-address
+          - name: openvpn_exporter
+            extra_args:
+              - "--openvpn.listen-address=127.0.0.1:9176"
+              - "--openvpn.status-files=/etc/openvpn/openvpn-status.log"
 ```
 
 ## How It Works
