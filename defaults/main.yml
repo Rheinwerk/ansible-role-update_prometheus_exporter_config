@@ -32,3 +32,12 @@
 #             - nginx
 
 _prometheus_exporter_configs: []
+
+# collect x509 metrics by default every 24h
+update_prometheus_exporter_config_manage_x509_certificate_exporter: true
+
+x509_certificate_exporter_listen_address: "127.0.0.1:9793"
+x509_certificate_exporter_refresh_interval: "24h"
+
+# Reuse existing glob file from scollector
+x509_certificate_exporter_cert_glob_file: "/etc/cert_exp_time_globs"

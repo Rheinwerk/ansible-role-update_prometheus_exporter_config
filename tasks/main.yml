@@ -1,4 +1,40 @@
 ---
+# x509-certificate-exporter (cert-expiry metrics) is expected to already be
+# installed -- disabled -- by the baseimage, on every consumer of this role.
+# Render its config from a cert-glob file (paths to watch, one glob per
+# line) and let the loop below start it via the usual drop-in mechanism.
+# Set update_prometheus_exporter_config_manage_x509_certificate_exporter to
+# false to opt out (e.g. a host/consumer that doesn't have the exporter).
+- name: Compute x509-certificate-exporter config content from cert glob file
+  ansible.builtin.set_fact:
+    _x509_certificate_exporter_config_content: |
+      server:
+        listen: "{{ x509_certificate_exporter_listen_address | default('127.0.0.1:9793') }}"
+      sources:
+        - kind: file
+          name: host-pki
+          refreshInterval: {{ x509_certificate_exporter_refresh_interval | default('1h') }}
+          paths:
+      {% for _line in (lookup('file', x509_certificate_exporter_cert_glob_file | default('/etc/cert_exp_time_globs'), errors='ignore') | default('', true)).splitlines() %}
+      {% set _glob = _line.strip() %}
+      {% if _glob and not _glob.startswith('#') and not _glob.endswith('.properties') %}
+            - "{{ _glob }}"
+      {% endif %}
+      {% endfor %}
+  when: update_prometheus_exporter_config_manage_x509_certificate_exporter | default(true)
+
+- name: Extend _prometheus_exporter_configs with x509-certificate-exporter
+  ansible.builtin.set_fact:
+    _prometheus_exporter_configs: "{{ (_prometheus_exporter_configs | default([])) + [_x509_certificate_exporter_entry] }}"
+  vars:
+    _x509_certificate_exporter_entry:
+      name: x509-certificate-exporter
+      config_content: "{{ _x509_certificate_exporter_config_content }}"
+      extra_args:
+        - "--config"
+        - "/etc/x509-certificate-exporter/config.yml"
+  when: update_prometheus_exporter_config_manage_x509_certificate_exporter | default(true)
+
 - name: Configure exporters
   ansible.builtin.include_tasks: configure_exporter.yml
   loop: "{{ _prometheus_exporter_configs }}"
