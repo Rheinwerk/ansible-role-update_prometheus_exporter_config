@@ -33,11 +33,13 @@
 
 _prometheus_exporter_configs: []
 
-# collect x509 metrics by default every 24h
-update_prometheus_exporter_config_manage_x509_certificate_exporter: true
-
-x509_certificate_exporter_listen_address: "127.0.0.1:9793"
-x509_certificate_exporter_refresh_interval: "24h"
-
-# Reuse existing glob file from scollector
-x509_certificate_exporter_cert_glob_file: "/etc/cert_exp_time_globs"
+# x509-certificate-exporter (cert-expiry metrics) is expected to already be
+# installed -- disabled -- by the baseimage, on every consumer of this role.
+# This role always appends a config for it to _prometheus_exporter_configs
+# (see tasks/main.yml) unless manage is set to false.
+x509_certificate_exporter:
+  manage: true
+  listen_address: "127.0.0.1:9793"
+  refresh_interval: "24h"
+  # Reuse the existing glob file scollector's external collector reads.
+  cert_glob_file: "/etc/cert_exp_time_globs"

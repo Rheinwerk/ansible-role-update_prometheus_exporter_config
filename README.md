@@ -97,14 +97,16 @@ ending in `.properties` are skipped: those wrap a PKCS#12 path + passphrase
 (e.g. APNS certs) that the exporter can't parse directly from a Java
 properties file.
 
-Set `update_prometheus_exporter_config_manage_x509_certificate_exporter:
-false` to opt out (e.g. a consumer of this role that doesn't install the
-exporter). Other tunables:
+Set `x509_certificate_exporter.manage: false` to opt out (e.g. a consumer
+of this role that doesn't install the exporter). Other tunables, with
+their defaults:
 
 ```yaml
-x509_certificate_exporter_listen_address: "127.0.0.1:9793"
-x509_certificate_exporter_refresh_interval: "1h"
-x509_certificate_exporter_cert_glob_file: "/etc/cert_exp_time_globs"
+x509_certificate_exporter:
+  manage: true
+  listen_address: "127.0.0.1:9793"
+  refresh_interval: "24h"
+  cert_glob_file: "/etc/cert_exp_time_globs"
 ```
 
 ## License
