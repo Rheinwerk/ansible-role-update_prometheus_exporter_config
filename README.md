@@ -80,35 +80,6 @@ For each configured exporter, the role:
 3. Deploys an `override.conf` that redefines the `ExecStart` directive
 4. Reloads systemd if the configuration changed
 
-## x509-certificate-exporter
-
-This role always appends a config entry for
-[x509-certificate-exporter](https://github.com/enix/x509-certificate-exporter)
-(cert-expiry metrics) to `_prometheus_exporter_configs`, ahead of the main
-loop -- there's no need to list it yourself. It's expected to already be
-installed, disabled, by the baseimage on every consumer of this role.
-
-The rendered `config_content` is a single `kind: file` source whose
-`paths` are read from a cert-glob file (default `/etc/cert_exp_time_globs`,
-one glob pattern per line, `#`-comments and blank lines ignored) --
-computed fresh each run, so it always reflects whatever cert paths other
-roles have contributed to that file by the time this role runs. Lines
-ending in `.properties` are skipped: those wrap a PKCS#12 path + passphrase
-(e.g. APNS certs) that the exporter can't parse directly from a Java
-properties file.
-
-Set `x509_certificate_exporter.manage: false` to opt out (e.g. a consumer
-of this role that doesn't install the exporter). Other tunables, with
-their defaults:
-
-```yaml
-x509_certificate_exporter:
-  manage: true
-  listen_address: "127.0.0.1:9793"
-  refresh_interval: "24h"
-  cert_glob_file: "/etc/cert_exp_time_globs"
-```
-
 ## License
 
 MIT
