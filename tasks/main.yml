@@ -1,7 +1,10 @@
 ---
+# Loop items end up in the output and in the ASP simulation JSON, so the loop runs over the names
+# and not over the configs, which can carry passwords (CDINFRA-1262)
 - name: Configure exporters
   ansible.builtin.include_tasks: configure_exporter.yml
-  loop: "{{ _prometheus_exporter_configs }}"
+  loop: "{{ _prometheus_exporter_configs | map(attribute='name') }}"
   loop_control:
-    loop_var: _exporter
-    label: "{{ _exporter.name }}"
+    loop_var: _exporter_name
+  vars:
+    _exporter: "{{ _prometheus_exporter_configs | selectattr('name', 'equalto', _exporter_name) | first }}"

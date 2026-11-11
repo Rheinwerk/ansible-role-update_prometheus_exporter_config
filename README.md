@@ -22,7 +22,7 @@ Each item supports the following properties:
 
 | Property | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `name` | yes | - | Service name (e.g., `systemd_exporter`) |
+| `name` | yes | - | Service name (e.g., `systemd_exporter`), unique within the list |
 | `listen_port` | no | - | Port the exporter listens on. If set, `--web.listen-address` is added automatically. Omit for exporters that don't support this flag. |
 | `listen_address` | no | `127.0.0.1` | Address the exporter binds to (only used with `listen_port`) |
 | `extra_args` | no | `[]` | List of additional command-line arguments |
