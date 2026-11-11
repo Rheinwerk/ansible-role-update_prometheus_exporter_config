@@ -1,0 +1,31 @@
+---
+# The exporters come from group_vars/all/test_vars.yml.
+- name: Verify
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Read the drop-ins and the config file
+      ansible.builtin.slurp:
+        src: "{{ item }}"
+      register: verify_files
+      loop:
+        - /etc/systemd/system/molecule_exporter.service.d/override.conf
+        - /etc/systemd/system/molecule_config_exporter.service.d/override.conf
+        - /etc/molecule_config_exporter/config.yml
+
+    - name: Each exporter got its own config
+      ansible.builtin.assert:
+        that:
+          - "'Environment=\"MOLECULE_EXPORTER_PASSWORD=molecule-marker-password\"' in exporter"
+          - "'ExecStart=molecule_exporter' in exporter"
+          - "'--web.listen-address=127.0.0.1:9999' in exporter"
+          - "'--log.level=debug' in exporter"
+          - "'ExecStart=molecule_config_exporter' in config_exporter"
+          - "'Environment=' not in config_exporter"
+          - "'--web.listen-address' not in config_exporter"
+          - "'marker: molecule-config' in config"
+      vars:
+        exporter: "{{ verify_files.results[0].content | b64decode }}"
+        config_exporter: "{{ verify_files.results[1].content | b64decode }}"
+        config: "{{ verify_files.results[2].content | b64decode }}"
