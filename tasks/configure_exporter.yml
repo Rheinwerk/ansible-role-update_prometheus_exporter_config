@@ -32,6 +32,8 @@
     owner: root
     group: root
     mode: "0644"
+  # diff: false, because a diff would put the config content into the task result (CDINFRA-1262)
+  diff: false
   when: _exporter.config_content is defined
 
 - name: "{{ _exporter.name }} | Create systemd drop-in directory"
@@ -49,6 +51,8 @@
     owner: root
     group: root
     mode: "0644"
+  # diff: false, because a diff would put the env_vars into the task result (CDINFRA-1262)
+  diff: false
   register: _exporter_dropin
 
 - name: "{{ _exporter.name }} | Reload systemd" # noqa no-handler

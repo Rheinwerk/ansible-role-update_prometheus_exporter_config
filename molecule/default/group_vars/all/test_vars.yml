@@ -1,0 +1,13 @@
+---
+# Two exporters, so the loop in tasks/main.yml runs: one with env_vars and a listen port, one with
+# config_content. verify.yml checks that each drop-in got its own config (CDINFRA-1262).
+_prometheus_exporter_configs:
+  - name: molecule_exporter
+    listen_port: "9999"
+    env_vars:
+      MOLECULE_EXPORTER_PASSWORD: molecule-marker-password
+    extra_args:
+      - "--log.level=debug"
+  - name: molecule_config_exporter
+    config_content: |
+      marker: molecule-config
